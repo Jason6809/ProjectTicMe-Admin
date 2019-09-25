@@ -1,0 +1,148 @@
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <p class="display-4">Posts</p>
+    </div>
+</div>
+<div class="container" ng-controller="CreatePostController">
+    <div class="row">
+        <!-- Right Panels -->
+        <div class="col-8">
+            <div class="container-fluid">
+                <!-- Add Form -->
+                <form class="px-4 py-4 shadow" ng-submit="addPost();">
+                    <!-- <p class="h5">You have <span class="text-success font-weight-bold">{{ Points.current }}</span> point to gave away. </p>
+                    <hr /> -->
+                    <!-- <div class="form-group">
+                        <label for="AuthorField">Author</label>
+                        <input type="text" class="form-control" id="AuthorField" ng-model="author">
+                    </div> -->
+                    <div class="form-group">
+                        <textarea class="form-control" ng-model="content" rows="4"></textarea>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <button type="submit" class="btn btn-success font-weight-bolder">#TicMe</button>
+                        <div class="dropdown ml-auto">
+                            <a class="btn btn-success dropdown-toggle" href="#!/create-post" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="font-weight-bolder h3">#</span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#!/create-post" ng-click="passHashtags(hashtag)" ng-repeat="hashtag in allowedHashtags">#{{ hashtag }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="col-6" ng-show="editFormVisible">
+                <div class="container-fluid">
+                    <form class="px-4 py-4 shadow" ng-submit="updatePost();">
+                        <p class="h5">Update Post</p>
+                        <hr />
+                        <div class="form-group">
+                            <label for="AuthorField">Author</label>
+                            <input type="text" class="form-control" id="AuthorField" ng-model="author" placeholder="Jane Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="PostField">Post</label>
+                            <textarea class="form-control" id="PostField" ng-model="content" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="button" class="btn btn-primary" ng-click="showAddForm()">Cancel</button>
+                    </form>
+                </div>
+            </div> -->
+            <!-- Posts -->
+            <!-- Loader -->
+            <div class="container-fluid d-flex flex-row justify-content-center my-5" ng-show="PostsIsLoading">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- No Post Div -->
+            <div class="container-fluid d-flex flex-row justify-content-center my-5" ng-show="noPosts">
+                <p class="display-4">No post exist......</p>
+            </div>
+            <!-- Have Posts Div -->
+            <div class="container-fluid my-3" ng-show="havePosts">
+                <div class="card my-3 shadow" ng-repeat="post in Posts | orderBy:'-datetime'" ng-show="post.isVisible && post.author_uid == currentUser.uid">
+                    <div class="card-header d-flex flex-row">
+                        <h4 class="mr-2">{{ post.author_displayName }}</h4>
+                        <h6 class="card-title my-auto"><a href="#!/user/{{ post.author }}">@{{ post.author }}</a></h6>
+                        <button class="btn btn-sm btn-success ml-auto" ng-click="passUsername(post.author)" ng-show="currentUser.uid != post.author_uid">
+                            <span class="font-weight-bolder h5">@</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" hashtagify="post.content" hash-link="hashtagClick($event)" at-link="atTagClick($event)"></p>
+                        <hr />
+                        <div class="d-flex flex-row justify-content-between">
+                            <div ng-init="likesStatus = checkLikesStatus(post)">
+                                <button type="button" class="btn btn-sm btn-outline-primary {{ likesStatus.$value }}">
+                                    <i class="material-icons mr-2" style="vertical-align: text-bottom;">thumb_up</i>{{ post.likesCount }}
+                                </button>
+                            </div>
+                            <h6 class="text-muted text-right my-auto">{{ post.datetime | date:'medium' }}</h6>
+                        </div>
+                        <!-- <p class="card-text"></p> -->
+                        <!-- <button type="button" class="btn btn-primary" ng-click="showEditForm(post);">Edit</button> -->
+                        <!-- <button type="button" class="btn btn-danger" ng-click="deletePost(post);">Delete</button> -->
+                    </div>
+                    <div class="card-footer">
+                        <div class="input-group mb-2" ng-show="false">
+                            <input type="text" class="form-control" placeholder="Comment......" ng-model="comment[$index]" ng-click="showComments = true">
+                            <div class="input-group-append">
+                                <button class="btn btn-sm btn-outline-primary" type="button" ng-click="addComment(post, comment[$index], $index);">
+                                    <i class="material-icons" style="vertical-align: middle;">send</i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- <hr class="mb-2" /> -->
+                        <div ng-init="comments = getPostsComments(post)">
+                            <div class="container-fluid px-1 py-2 d-flex flex-row justify-content-center" ng-show="comments == null || comments.length <= 0">
+                                <p class="my-0">No comment exist yet......</p>
+                            </div>
+                            <div class="container-fluid px-1 py-2 d-flex flex-row justify-content-center" ng-show="comments != null && comments.length > 0">
+                                <a class="user-ref my-0" style="cursor: pointer;" ng-click="showComments = !showComments" ng-show="!showComments">Show all {{ comments.length }} comments...</a>
+                                <a class="user-ref my-0" style="cursor: pointer;" ng-click="showComments = !showComments" ng-show="showComments">Hide all {{ comments.length }} comments...</a>
+                            </div>
+                            <div ng-show="comments != null && comments.length > 0">
+                                <div class="container-fluid px-1 py-2" ng-repeat="comment in comments | orderBy:'-datetime'" ng-show="comment.isVisible">
+                                    <p class="my-0">
+                                        <a href="#!/user/{{ comment.author }}" class="user-ref mr-2 font-weight-bolder">{{ comment.author_displayName }} :</a>
+                                        {{ comment.content }}
+                                        <span class="text-muted text-right my-0 ml-2" style="font-size: 8pt;">{{ comment.datetime | date:'medium' }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="d-flex flex-row justify-content-between">
+                            <button type="button" class="btn btn-outline-primary">
+                                <i class="material-icons mr-2" style="vertical-align: sub;">thumb_up</i>Like
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary">
+                                <i class="material-icons m-0 p-0" style="vertical-align: middle;">more_horiz</i>
+                            </button>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Left Panels -->
+        <div class="col-4">
+            <!-- Hashtags Trending -->
+            <table class="table shadow">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="2">Usernames</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="username in Usernames" ng-show="username.isVisible">
+                        <th scope="row hashtag-link">
+                            <a class="hashtag-link" ng-click="passUsername(username.$id)">@{{ username.$id }}</a>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

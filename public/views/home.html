@@ -1,0 +1,277 @@
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <p class="display-4">Welcome, Administrator</p>
+    </div>
+</div>
+<div class="container-fluid" ng-controller="HomeController">
+    <div class="row">
+        <div class="col-2">
+            <ul class="nav nav-pills flex-column mt-3" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="dashboard-tab" data-toggle="tab" data-target="#dashboard" style="cursor: pointer;" role="tab" aria-controls="dashboard" aria-selected="true">DASHBOARD</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="posts-tab" data-toggle="tab" data-target="#posts" style="cursor: pointer;" role="tab" aria-controls="posts" aria-selected="false">POSTS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="users-tab" data-toggle="tab" data-target="#users" style="cursor: pointer;" role="tab" aria-controls="users" aria-selected="false">USERS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="config-tab" data-toggle="tab" data-target="#config" style="cursor: pointer;" role="tab" aria-controls="config" aria-selected="false">CONFIG</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <div class="tab-content">
+                <div class="tab-pane shadow active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                    <p class="display-4 pl-3">Dashboard</p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Posts -->
+                            <div class="col-4">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Posts</h4>
+                                        <div class="d-flex flex-row justify-content-end" ng-show="PostsIsLoading">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-right display-4" ng-show="havePosts">
+                                            {{ Posts.length - 1 }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Users -->
+                            <div class="col-4">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Users</h4>
+                                        <div class="d-flex flex-row justify-content-end" ng-show="UsersIsLoading">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-right display-4" ng-show="haveUsers">
+                                            {{ Users.length - 1 }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Hashtags -->
+                            <div class="col-4">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Hashtags</h4>
+                                        <div class="d-flex flex-row justify-content-end" ng-show="HashtagsIsLoading">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-right display-4" ng-show="haveHashtags">
+                                            {{ totalHashtags }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                    <p class="display-4 pl-3">Posts</p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">From</th>
+                                            <th scope="col">To</th>
+                                            <th scope="col">Datetime</th>
+                                            <th scope="col">Point</th>
+                                            <th scope="col">Hashtags</th>
+                                            <th scope="col">Content</th>
+                                            <th scope="col">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="PostsIsLoading">
+                                            <td class="text-center" colspan="6">
+                                                <div class="spinner-border text-success" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="noPosts">
+                                            <td class="text-center" colspan="6">
+                                                <p class="display-4">No post exist......</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="post in Posts | orderBy: '-datetime'" ng-show="post.isVisible">
+                                            <td><a href="#!/user/{{ post.author }}">@{{ post.author }}</a></td>
+                                            <td><a href="#!/user/{{ post.receiver }}">@{{ post.receiver }}</a></td>
+                                            <td>{{ post.datetime | date:'medium' }}</td>
+                                            <td>+{{ post.point }}</td>
+                                            <td>
+                                                <p ng-repeat="hashtag in post.hashtags">#{{ hashtag }}</p>
+                                            </td>
+                                            <td>{{ post.content }}</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-outline-secondary ml-auto" href="#!/post/{{ post.$id }}">
+                                                    <i class="material-icons" style="vertical-align: middle;">
+                                                        visibility
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="users" role="tabpanel" aria-labelledby="users-tab">
+                    <p class="display-4 pl-3">Users</p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Display Name</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">E-mail</th>
+                                            <th scope="col">Registration Date</th>
+                                            <th scope="col">Points</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="UsersIsLoading">
+                                            <td class="text-center" colspan="6">
+                                                <div class="spinner-border text-success" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="noUsers">
+                                            <td class="text-center" colspan="6">
+                                                <p class="display-4">No users exist......</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="user in Users | orderBy: '-datetime'" ng-show="user.Profile.isVisible">
+                                            <td>{{ user.Profile.displayName }}</td>
+                                            <td><a href="#!/user/{{ user.Profile.username }}">@{{ user.Profile.username }}</a></td>
+                                            <td>{{ user.Profile.email }}</td>
+                                            <td>{{ user.Profile.datetime | date:'medium' }}</td>
+                                            <td>
+                                                <p class="text-success">Current Point: {{ user.Points.current }}</p>
+                                                <p class="">Received Point: {{ user.Points.received }}</p>
+                                                <p class="text-danger">Gave Point: {{ user.Points.gave }}</p>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-sm btn-success ml-auto" href="#!/create-post">
+                                                    Give Points
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="config" role="tabpanel" aria-labelledby="config-tab">
+                    <p class="display-4 pl-3">Configuration</p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="h4 pl-2">Rewards</p>
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row" style="vertical-align: middle;">Min Redeemable Point: </th>
+                                            <td>
+                                                <div class="input-group m-0">
+                                                    <input type="number" class="form-control rounded-0" placeholder="" ng-model="minRedeemablePoint.$value" ng-disabled="!allowEditMinRedeemablePoint">
+                                                    <div class="input-group-append" ng-show="!allowEditMinRedeemablePoint">
+                                                        <button class="btn btn-sm btn-warning rounded-0" type="button" ng-click="allowEditMinRedeemablePoint = !allowEditMinRedeemablePoint">
+                                                            <i class="material-icons" style="vertical-align: middle;">
+                                                                lock_open
+                                                            </i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="input-group-append" ng-show="allowEditMinRedeemablePoint">
+                                                        <button class="btn btn-sm btn-outline-danger rounded-0" type="button" ng-click="allowEditMinRedeemablePoint = !allowEditMinRedeemablePoint">
+                                                            <i class="material-icons" style="vertical-align: middle;">
+                                                                lock
+                                                            </i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr ng-repeat="reward in Rewards">
+                                            <th scope="row" style="vertical-align: middle;">{{ reward.$id }}</th>
+                                            <th scope="row" style="vertical-align: middle;">Prize: </th>
+                                            <td>
+                                                <div class="input-group m-0">
+                                                    <input type="text" class="form-control rounded-0" placeholder="" ng-model="reward.text" ng-change="Rewards.$save(reward);" ng-disabled="!allowEditText">
+                                                    <div class="input-group-append" ng-show="!allowEditText">
+                                                        <button class="btn btn-sm btn-warning rounded-0" type="button" ng-click="allowEditText = !allowEditText">
+                                                            <i class="material-icons" style="vertical-align: middle;">
+                                                                lock_open
+                                                            </i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="input-group-append" ng-show="allowEditText">
+                                                        <button class="btn btn-sm btn-outline-danger rounded-0" type="button" ng-click="allowEditText = !allowEditText">
+                                                            <i class="material-icons" style="vertical-align: middle;">
+                                                                lock
+                                                            </i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <th scope="row" style="vertical-align: middle;">Quantity: </th>
+                                            <td>
+                                                <div class="input-group m-0">
+                                                    <input type="number" class="form-control rounded-0" placeholder="" ng-model="reward.quantity" ng-change="Rewards.$save(reward);" ng-disabled="!allowEditQuantity">
+                                                    <div class="input-group-append" ng-show="!allowEditQuantity">
+                                                        <button class="btn btn-sm btn-warning rounded-0" type="button" ng-click="allowEditQuantity = !allowEditQuantity">
+                                                            <i class="material-icons" style="vertical-align: middle;">
+                                                                lock_open
+                                                            </i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="input-group-append" ng-show="allowEditQuantity">
+                                                        <button class="btn btn-sm btn-outline-danger rounded-0" type="button" ng-click="allowEditQuantity = !allowEditQuantity">
+                                                            <i class="material-icons" style="vertical-align: middle;">
+                                                                lock
+                                                            </i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="vertical-align: middle;">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="customSwitch{{ $index }}" ng-model="reward.isVisible" ng-change="Rewards.$save(reward);">
+                                                    <label class="custom-control-label" for="customSwitch{{ $index }}">{{ reward.isVisible ? 'SHOW' : 'HIDDEN' }}</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

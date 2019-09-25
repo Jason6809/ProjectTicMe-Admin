@@ -1,0 +1,39 @@
+.jumbotron {
+    padding: 2rem 1rem;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+span.point-ref {
+    color: #28a745 !important;
+    background-color: transparent !important;
+    border: 1px solid #28a745 !important;
+    border-radius: 5px !important;
+    padding: 1px 5px !important;
+}
+
+a.user-ref {
+    color: #007bff !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+a.user-ref:hover,
+a.user-ref:focus {
+    color: #0056b3 !important;
+    text-decoration: underline !important;
+}
+
+a.hashtag-link {
+    color: #6c757d !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+a.hashtag-link:hover,
+a.hashtag-link:focus {
+    color: #6c757d !important;
+    text-decoration: underline !important;
+}

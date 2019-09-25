@@ -1,0 +1,200 @@
+<div class="jumbotron jumbotron-fluid" ng-controller="UserController">
+    <div class="container d-flex flex-row">
+        <p class="display-4 pr-3">{{ Profile.displayName }}</p>
+        <a class="user-ref mt-auto mb-3 pb-1">@{{ Profile.username }}</a>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="card mb-3 shadow">
+                <div class="card-header">
+                    <h4 class="card-title m-0">Received Point</h4>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid d-flex flex-row justify-content-center my-4" ng-show="PointsIsLoading">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <p class="card-text text-center display-2">{{ Points.received }}</p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex flex-row justify-content-around">
+                        <p class="card-text text-success mb-0">Current: {{ Points.current }}</p>
+                        <p class="card-text text-danger mb-0">Gave: {{ Points.gave }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="hashtags-tab" data-toggle="tab" data-target="#hashtags" style="cursor: pointer;" role="tab" aria-controls="hashtags" aria-selected="true">HASHTAGS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" style="cursor: pointer;" role="tab" aria-controls="profile" aria-selected="false">PROFILE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="received-tab" data-toggle="tab" data-target="#received" style="cursor: pointer;" role="tab" aria-controls="received" aria-selected="false">RECEIVED</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="sent-tab" data-toggle="tab" data-target="#sent" style="cursor: pointer;" role="tab" aria-controls="sent" aria-selected="false">SENT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="rewards-tab" data-toggle="tab" data-target="#rewards" style="cursor: pointer;" role="tab" aria-controls="rewards" aria-selected="false">REWARDS</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane shadow show active" id="hashtags" role="tabpanel" aria-labelledby="hashtags-tab">
+                    <div class="container d-flex flex-row justify-content-center py-5" ng-show="ReceivedHashtagsIsLoading">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="container py-5 px-3" ng-show="ReceivedHashtags">
+                        <div class="row">
+                            <div class="col-4" ng-repeat="hashtag in ReceivedHashtags">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title"><a class="hashtag-link" ng-click="hashtagClick($event)">#{{ hashtag.$id }}</a></h6>
+                                        <p class="card-text text-right display-4">{{ hashtag.counter }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="container py-5 px-3">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Display Name: </th>
+                                    <td>{{ Profile.displayName }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Username: </th>
+                                    <td><a class="user-ref">@{{ Profile.username }}</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Email: </th>
+                                    <td>{{ Profile.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Registration Date: </th>
+                                    <td>{{ Profile.datetime | date:'medium' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="received" role="tabpanel" aria-labelledby="received-tab">
+                    <!-- Loader -->
+                    <div class="container d-flex flex-row justify-content-center py-5 px-3" ng-show="ReceivedPostsIsLoading">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <!-- No Post Div -->
+                    <div class="container d-flex flex-row justify-content-center py-5 px-3" ng-show="noReceivedPosts">
+                        <p class="display-4">No post exist......</p>
+                    </div>
+                    <!-- Have Posts Div -->
+                    <div class="container py-5 px-3" ng-show="haveReceivedPosts">
+                        <div class="card mb-3" ng-repeat="post in ReceivedPosts | orderBy:'-datetime'" ng-show="post.isVisible">
+                            <div class="card-header d-flex flex-row">
+                                <h4 class="mr-2">{{ post.author_displayName }}</h4>
+                                <h6 class="card-title my-auto"><a href="#!/user/{{ post.author }}">@{{ post.author }}</a></h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" hashtagify="post.content" hash-link="hashtagClick($event)"></p>
+                            </div>
+                            <div class="card-footer d-flex flex-row justify-content-between">
+                                <div ng-init="likesStatus = checkLikesStatus(post)">
+                                    <button type="button" class="btn btn-sm btn-outline-primary {{ likesStatus.$value }}">
+                                        <i class="material-icons mr-2" style="vertical-align: text-bottom;">thumb_up</i>{{ post.likesCount }}
+                                    </button>
+                                </div>
+                                <h6 class="text-muted text-right my-auto">{{ post.datetime | date:'medium' }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+                    <!-- Loader -->
+                    <div class="container d-flex flex-row justify-content-center py-5 px-3" ng-show="SentPostsIsLoading">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <!-- No Post Div -->
+                    <div class="container d-flex flex-row justify-content-center py-5 px-3" ng-show="noSentPosts">
+                        <p class="display-4">No post exist......</p>
+                    </div>
+                    <!-- Have Posts Div -->
+                    <div class="container py-5 px-3" ng-show="haveSentPosts">
+                        <div class="card mb-3" ng-repeat="post in SentPosts | orderBy:'-datetime'" ng-show="post.isVisible">
+                            <div class="card-header d-flex flex-row">
+                                <h4 class="mr-2">{{ Profile.displayName }}</h4>
+                                <h6 class="card-title my-auto"><a>@{{ Profile.username }}</a></h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" hashtagify="post.content" hash-link="hashtagClick($event)" at-link="atTagClick($event)"></p>
+                            </div>
+                            <div class="card-footer d-flex flex-row justify-content-between">
+                                <div ng-init="likesStatus = checkLikesStatus(post)">
+                                    <button type="button" class="btn btn-sm btn-outline-primary {{ likesStatus.$value }}">
+                                        <i class="material-icons mr-2" style="vertical-align: text-bottom;">thumb_up</i>{{ post.likesCount }}
+                                    </button>
+                                </div>
+                                <h6 class="text-muted text-right my-auto">{{ post.datetime | date:'medium' }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane shadow" id="rewards" role="tabpanel" aria-labelledby="rewards-tab">
+                    <div class="container py-5 px-3">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Reward ID</th>
+                                    <th scope="col">Datetime</th>
+                                    <th scope="col">Reward</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-show="ReceivedRewardsIsLoading">
+                                    <td class="text-center" colspan="6">
+                                        <div class="spinner-border text-success" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-show="noReceivedRewards">
+                                    <td class="text-center" colspan="6">
+                                        <p class="display-4">No rewards exist......</p>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="reward in ReceivedRewards | orderBy: '-datetime'" ng-show="reward.isVisible">
+                                    <td>{{ reward.$id }}</td>
+                                    <td>{{ reward.datetime | date:'medium' }}</td>
+                                    <td>{{ reward.text }}</td>
+                                    <td>{{ reward.quantity }}</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch{{ $index }}" ng-model="reward.status" ng-change="ReceivedRewards.$save(reward);" ng-disabled="reward.status">
+                                            <label class="custom-control-label" for="customSwitch{{ $index }}">{{ reward.status ? 'Redeemed' : 'Available' }}</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

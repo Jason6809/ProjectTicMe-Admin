@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Recognition Modules Admin Portal</title>
+    <!-- BootstrapCSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- BootstrapJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <!-- AngularJS routing library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#config-web-app -->
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-database.js"></script>
+    <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyBFhjsEikydJ2v0b7jI39-IRnJzXWy_fPk",
+        authDomain: "recognition-modules.firebaseapp.com",
+        databaseURL: "https://recognition-modules.firebaseio.com",
+        projectId: "recognition-modules",
+        storageBucket: "recognition-modules.appspot.com",
+        messagingSenderId: "258711222544",
+        appId: "1:258711222544:web:c5c1a9b0f2a9e28e680d95"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    </script>
+    <!-- AngularFire -->
+    <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+</head>
+
+<body ng-app="myApp" class="d-flex flex-column" style="height: 100vh;">
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand navbar-light bg-light" ng-controller="IndexController">
+            <a class="navbar-brand text-success font-weight-bolder" href="#!/">#TicMe - Admin Portal</a>
+            <div class="navbar-nav" ng-show="isLogin">
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/create-post">Create Posts</a>
+                </li>
+            </div>
+            <ul class="navbar-nav ml-auto" ng-show="isLogin">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="cursor: pointer;" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Administrator
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" style="cursor: pointer;" ng-click="signOut();">Sign Out</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Main -->
+    <main role="main" class="flex-shrink-0 mb-5">
+        <!-- Views -->
+        <div ng-view></div>
+    </main>
+    <!-- Footer -->
+    <footer class="mt-auto">
+        <div class="container-fluid bg-dark py-2">
+            <p class="lead text-light text-center m-0">Version 1.0 [Prototype] By Jason Tam. </p>
+        </div>
+    </footer>
+    <!-- Modules -->
+    <script src="js/app.js"></script>
+    <!-- Controllers -->
+    <script src="js/controllers/IndexController.js"></script>
+    <script src="js/controllers/MainController.js"></script>
+    <script src="js/controllers/LoaderController.js"></script>
+    <script src="js/controllers/HomeController.js"></script>
+    <script src="js/controllers/UserController.js"></script>
+    <script src="js/controllers/PostController.js"></script>
+    <script src="js/controllers/CreatePostController.js"></script>
+    <!-- Directives -->
+    <script src="js/directives/hashtagify.js"></script>
+    <!-- Services -->
+    <script src=""></script>
+</body>
+
+</html>
